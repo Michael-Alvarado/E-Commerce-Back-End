@@ -3,26 +3,82 @@ const { Category, Product } = require('../../models');
 
 // The `/api/categories` endpoint
 
-router.get('/', (req, res) => {
-  // find all categories
-  // be sure to include its associated Products
+// Gets all categories with associated data
+router.get('/', async (req, res) => {
+	try {
+		const data = await Category.findAll({
+			include: [{ model: Product }],
+		});
+		res.status(200).json(data);
+	} catch (err) {
+		res.status(500).json(err);
+	}
 });
 
-router.get('/:id', (req, res) => {
-  // find one category by its `id` value
-  // be sure to include its associated Products
+// Gets specific category by provided ID
+router.get('/:id', async (req, res) => {
+	try {
+		const data = await Category.findByPk(req.params.id, {
+			include: [{ model: Product }],
+		});
+
+		if (!data) {
+			res.status(400).json({
+				message: 'Unable to locate a category matching the provided ID.',
+			});
+		} else {
+			res.status(200).json(data);
+		}
+	} catch (err) {
+		res.status(500).json(err);
+	}
 });
 
-router.post('/', (req, res) => {
-  // create a new category
+// Creates new category
+router.post('/', async (req, res) => {
+	try {
+		const newCat = await Category.create(req.body);
+
+		res.status(200).json(newCat);
+	} catch (err) {
+		res.status(400).json(err);
+	}
 });
 
-router.put('/:id', (req, res) => {
-  // update a category by its `id` value
+// Updates a category based on ID provided in request
+router.put('/:id', async (req, res) => {
+	try {
+		const update = await Category.update(req.body, {
+			where: {
+				id: req.params.id,
+			},
+		});
+		res.status(200).json(update);
+	} catch (err) {
+		res.status(400).json(err);
+	}
 });
 
-router.delete('/:id', (req, res) => {
-  // delete a category by its `id` value
+// Deletes a category based on ID provided in request
+router.delete('/:id', async (req, res) => {
+	try {
+		const data = await Category.destroy({
+			where: {
+				id: req.params.id,
+			},
+		});
+		if (!data) {
+			res
+				.status(400)
+				.json({
+					message: 'Unable to locate a category matching the provided ID.',
+				});
+		} else {
+			res.status(200).json(data);
+		}
+	} catch (err) {
+		res.status(500).json(err);
+	}
 });
 
 module.exports = router;
