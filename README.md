@@ -21,6 +21,7 @@
   ## Usage
   
   Start the server using the "start" script in package.json file
+  [Link to video walkthrough](https://drive.google.com/file/d/1oo8GCo5CCl9oBZrezpbdhho5b9Zjs9NJ/view)
 
   ## License
   
